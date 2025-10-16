@@ -22,7 +22,14 @@ const Assessment = () => {
         setLoading(true);
         const data = await assessmentService.getAssessment(id);
         setAssessment(data.assessment);
-        setQuestions(data.questions);
+        // Deduplicate questions by id to avoid repeated rendering
+        const seenQuestionIds = new Set();
+        const uniqueQuestions = (data.questions || []).filter((q) => {
+          if (!q || seenQuestionIds.has(q.id)) return false;
+          seenQuestionIds.add(q.id);
+          return true;
+        });
+        setQuestions(uniqueQuestions);
         setStartTime(Date.now());
         setTimeLeft(30 * 60 * 1000); // 30 minutes in milliseconds
       } catch (err) {

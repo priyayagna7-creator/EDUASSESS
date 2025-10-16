@@ -222,6 +222,87 @@
   margin-bottom: 20px;
 }
 
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 14px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  background: white;
+  transition: all 0.25s ease;
+}
+
+.leaderboard-item:hover {
+  border-color: #20c997;
+  background: #f3fffb;
+  transform: translateY(-2px);
+}
+
+.leaderboard-item .rank {
+  min-width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #2c3e50;
+  background: #e8f7f1;
+  border: 2px solid #c8f0e2;
+}
+
+.leaderboard-item .user {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.leaderboard-item .user .name {
+  font-weight: 600;
+  color: #2c3e50;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-item .user .email {
+  font-size: 0.85rem;
+  color: #6c757d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-item .stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.leaderboard-item .stats .avg {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #e6fff5;
+  color: #198754;
+  font-weight: 700;
+  min-width: 52px;
+  text-align: center;
+}
+
+.leaderboard-item .stats .attempts {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
 .skill-analysis {
   display: grid;
   grid-template-columns: 1fr 1fr;

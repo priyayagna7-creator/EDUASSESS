@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { adminService } from '../services/adminService';
+import { assessmentService } from '../services/assessmentService';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import './AdminPanel.css';
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [analytics, setAnalytics] = useState(null);
+  const [leaderboard, setLeaderboard] = useState([]);
   const [assessments, setAssessments] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,15 +24,17 @@ const AdminPanel = () => {
     const fetchAdminData = async () => {
       try {
         setLoading(true);
-        const [analyticsData, assessmentsData, usersData] = await Promise.all([
+        const [analyticsData, assessmentsData, usersData, leaderboardData] = await Promise.all([
           adminService.getAnalytics(),
           adminService.getAssessments(),
-          adminService.getUsers()
+          adminService.getUsers(),
+          assessmentService.getLeaderboard()
         ]);
         
         setAnalytics(analyticsData);
         setAssessments(assessmentsData);
         setUsers(usersData);
+        setLeaderboard(leaderboardData);
       } catch (err) {
         setError('Failed to load admin data');
         console.error('Admin panel error:', err);
@@ -184,6 +188,25 @@ const AdminPanel = () => {
                     <Bar dataKey="average_score" fill="#007bff" />
                   </BarChart>
                 </ResponsiveContainer>
+              </div>
+              <div className="chart-card">
+                <h3>Leaderboard (Top Performers)</h3>
+                <div className="leaderboard-list">
+                  {leaderboard.length === 0 && <p>No submissions yet.</p>}
+                  {leaderboard.map((row, index) => (
+                    <div key={row.user_id} className="leaderboard-item">
+                      <div className="rank">#{index + 1}</div>
+                      <div className="user">
+                        <div className="name">{row.user_name}</div>
+                        <div className="email">{row.user_email}</div>
+                      </div>
+                      <div className="stats">
+                        <span className="avg">{row.average_percentage}%</span>
+                        <span className="attempts">{row.attempts} attempts</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

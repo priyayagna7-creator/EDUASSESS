@@ -10,6 +10,7 @@ const Dashboard = () => {
   const [assessments, setAssessments] = useState([]);
   const [results, setResults] = useState([]);
   const [skillAnalysis, setSkillAnalysis] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -17,15 +18,17 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const [assessmentsData, resultsData, skillData] = await Promise.all([
+        const [assessmentsData, resultsData, skillData, leaderboardData] = await Promise.all([
           assessmentService.getAssessments(),
           assessmentService.getResults(),
-          assessmentService.getSkillAnalysis()
+          assessmentService.getSkillAnalysis(),
+          assessmentService.getLeaderboard()
         ]);
         
         setAssessments(assessmentsData.slice(0, 3)); // Show only 3 recent assessments
         setResults(resultsData.slice(0, 5)); // Show only 5 recent results
         setSkillAnalysis(skillData);
+        setLeaderboard(leaderboardData.slice(0, 10));
       } catch (err) {
         setError('Failed to load dashboard data');
         console.error('Dashboard error:', err);
@@ -133,6 +136,28 @@ const Dashboard = () => {
                 >
                   Start Assessment
                 </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="dashboard-section">
+          <div className="section-header">
+            <h2>Leaderboard</h2>
+          </div>
+          <div className="leaderboard-list">
+            {leaderboard.length === 0 && <p>No leaderboard data yet.</p>}
+            {leaderboard.map((row, index) => (
+              <div key={row.user_id} className="leaderboard-item">
+                <div className="rank">#{index + 1}</div>
+                <div className="user">
+                  <div className="name">{row.user_name}</div>
+                  <div className="email">{row.user_email}</div>
+                </div>
+                <div className="stats">
+                  <span className="avg">{row.average_percentage}%</span>
+                  <span className="attempts">{row.attempts} attempts</span>
+                </div>
               </div>
             ))}
           </div>

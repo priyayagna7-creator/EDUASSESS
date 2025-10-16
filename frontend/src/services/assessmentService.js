@@ -44,5 +44,14 @@ export const assessmentService = {
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to fetch skill analysis');
     }
+  },
+
+  async getLeaderboard() {
+    try {
+      const response = await api.get('/leaderboard');
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch leaderboard');
+    }
   }
 };

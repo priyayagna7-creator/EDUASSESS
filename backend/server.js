@@ -486,6 +486,33 @@ app.get('/api/health', (req, res) => {
   res.json({ message: 'EDUASSESS API is running' });
 });
 
+// Leaderboard: rank users by average percentage (all-time)
+app.get('/api/leaderboard', authenticateToken, async (req, res) => {
+  try {
+    // For both admin and students; optionally could restrict fields for students
+    const [rows] = await db.promise().query(`
+      SELECT 
+        u.id AS user_id,
+        u.name AS user_name,
+        u.email AS user_email,
+        COUNT(ar.id) AS attempts,
+        ROUND(AVG(ar.percentage)) AS average_percentage,
+        MAX(ar.submitted_at) AS last_submission
+      FROM assessment_results ar
+      JOIN users u ON u.id = ar.user_id
+      GROUP BY u.id
+      HAVING attempts > 0
+      ORDER BY average_percentage DESC, attempts DESC, last_submission DESC
+      LIMIT 50
+    `);
+
+    res.json(rows);
+  } catch (error) {
+    console.error('Leaderboard error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
