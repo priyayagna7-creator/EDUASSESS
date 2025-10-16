@@ -199,9 +199,12 @@ app.get('/api/assessments/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ message: 'Assessment not found' });
     }
 
-    // Get questions for this assessment
+    // Get questions for this assessment (select distinct rows to avoid duplicates)
     const [questions] = await db.promise().query(
-      'SELECT * FROM questions WHERE assessment_id = ? ORDER BY question_order',
+      `SELECT DISTINCT id, assessment_id, question_text, option_a, option_b, option_c, option_d, correct_answer, points, question_order, created_at
+       FROM questions
+       WHERE assessment_id = ?
+       ORDER BY question_order`,
       [assessmentId]
     );
 
